@@ -17,6 +17,14 @@ class ServiceController extends Controller
     public function create(){
         return view('pages.services.create');
     }
+    // create view
+    public function show(){
+        return view('pages.services.show');
+    }
+    // create view
+    public function payment(){
+        return view('pages.services.payment');
+    }
 
 
 

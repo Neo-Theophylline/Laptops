@@ -18,3 +18,6 @@ Route::resources([
     'services' => ServiceController::class,
 ]);
 
+// custom payment
+Route::get('services/{service}/payment', [ServiceController::class, 'payment'])
+     ->name('services.payment');

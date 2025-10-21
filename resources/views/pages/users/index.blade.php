@@ -4,14 +4,14 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Services</h3>
-                <p class="text-subtitle text-muted">Service data</p>
+                <h3>Users</h3>
+                <p class="text-subtitle text-muted">User data</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#">Data</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Services</li>
+                        <li class="breadcrumb-item active" aria-current="page">Users</li>
                     </ol>
                 </nav>
             </div>
@@ -20,10 +20,10 @@
 
     <section class="section">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header"> 
                 <h5 class="card-title d-flex justify-content-between align-items-center flex-wrap">
-                    <span>Services</span>
-                    <a href="{{ route('services.create') }}" class="btn btn-primary">Add Service</a>
+                    <span>Users</span>
+                    <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>
                 </h5>
             </div>
 
@@ -32,41 +32,51 @@
                     <table class="table" id="table1">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>No Invoice</th>
-                                <th>Customer</th>
-                                <th>Laptop</th>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
                                 <th>Status</th>
-                                <th>Paid Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($services as $service)
+                            @forelse ($users as $user)
                                 <tr class="align-middle">
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td class="text-nowrap">{{ $service->no_invoice ?? '-' }}</td>
-                                    <td class="text-nowrap">{{ $service->customer_name ?? '-' }}</td>
-                                    <td class="text-nowrap">{{ $service->laptop->name ?? '-' }}</td>
+                                    <td class="text-nowrap">
+                                        @if ($user->photo)
+                                            <img src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}"
+                                                style="width: 50px; height: 50px; object-fit: cover;">
+                                        @else
+                                            <img src="{{ asset('assets/img/npc.png') }}" alt="Default"
+                                                style="width: 50px; height: 50px; object-fit: cover;">
+                                        @endif
+                                    </td>
+
+                                    <td class="text-nowrap">{{ $user->name }}</td>
+                                    <td class="text-nowrap">{{ $user->email }}</td>
 
                                     <td class="text-nowrap">
-                                        <span class="badge bg-{{ $service->status === 'Completed' ? 'success' : ($service->status === 'On Progress' ? 'warning' : 'secondary') }}">
-                                            {{ $service->status }}
-                                        </span>
+                                        <small
+                                            style="color:
+                                                {{ $user->role === 'Admin' ? 'rgb(0,183,255)' :
+                                                ($user->role === 'Technician' ? 'rgb(255,238,0)' : 'rgb(21,255,0)') }};">
+                                            {{ $user->role }}
+                                        </small>
                                     </td>
 
                                     <td class="text-nowrap">
-                                        <span class="badge bg-{{ $service->paid_status === 'Paid' ? 'success' : 'danger' }}">
-                                            {{ $service->paid_status }}
+                                        <span class="badge bg-{{ $user->status === 'Active' ? 'success' : 'danger' }}">
+                                            {{ $user->status === 'Active' ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
 
                                     <td class="text-nowrap">
                                         <div class="d-inline-flex gap-2 align-items-center">
-                                            <a href="{{ route('services.show', $service->id) }}" class="btn btn-sm btn-primary">Detail</a>
-                                            <a href="{{ route('services.edit', $service->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                            <form action="{{ route('services.destroy', $service->id) }}" method="POST"
-                                                  onsubmit="return confirm('Are you sure you want to delete this service?');"
+                                            <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary">Detail</a>
+                                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                  onsubmit="return confirm('Are you sure you want to delete this user?');"
                                                   style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -76,9 +86,6 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted">No service data found.</td>
-                                </tr>
                             @endforelse
                         </tbody>
                     </table>
