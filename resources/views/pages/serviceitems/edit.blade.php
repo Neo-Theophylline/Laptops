@@ -71,7 +71,7 @@
                                             <input type="file" class="form-control" id="formFile" name="photo"
                                                    accept="image/*" onchange="previewPhoto(event)">
                                             <img id="photoPreview"
-                                                 src="{{ $serviceItem->photo ? asset('storage/' . $serviceItem->photo) : asset('assets/img/npc.png') }}"
+                                                 src="{{ $serviceItem->photo ? asset('storage/' . $serviceItem->photo) : asset('assets/img/wrench.jpg') }}"
                                                  alt="Photo Preview">
                                         </div>
                                     </div>

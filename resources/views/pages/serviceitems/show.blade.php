@@ -66,7 +66,7 @@
                                             @if ($serviceItem->photo)
                                                 <img id="photoPreview" src="{{ asset('storage/' . $serviceItem->photo) }}" alt="{{ $serviceItem->service_name }}">
                                             @else
-                                                <img id="photoPreview" src="{{ asset('assets/img/npc.png') }}" alt="Default">
+                                                <img id="photoPreview" src="{{ asset('assets/img/wrench.jpg') }}" alt="Default">
                                             @endif
                                         </div>
                                     </div>

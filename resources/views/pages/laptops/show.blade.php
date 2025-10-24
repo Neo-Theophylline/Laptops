@@ -84,7 +84,7 @@
                                             @if ($laptop->photo)
                                                 <img id="photoPreview" src="{{ asset('storage/' . $laptop->photo) }}" alt="{{ $laptop->brand }}">
                                             @else
-                                                <img id="photoPreview" src="{{ asset('assets/img/npc.png') }}" alt="Default">
+                                                <img id="photoPreview" src="{{ asset('assets/img/laptop.jpg') }}" alt="Default">
                                             @endif
                                         </div>
                                     </div>

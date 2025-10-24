@@ -20,7 +20,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Total Service</h6>
+                                        <h6 class="text-muted font-semibold">Total Services</h6>
                                         <h6 class="font-extrabold mb-0">{{ $totalServices ?? 0 }}</h6>
                                     </div>
                                 </div>
@@ -38,7 +38,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Sedang Dikerjakan</h6>
+                                        <h6 class="text-muted font-semibold">In Progress</h6>
                                         <h6 class="font-extrabold mb-0">{{ $processServices ?? 0 }}</h6>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Selesai</h6>
+                                        <h6 class="text-muted font-semibold">Completed</h6>
                                         <h6 class="font-extrabold mb-0">{{ $finishedServices ?? 0 }}</h6>
                                     </div>
                                 </div>
@@ -69,19 +69,22 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <h4>Service Terbaru</h4>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">Latest Services</h4>
+                                <a href="{{ route('services.index') }}" class="btn btn-primary btn-sm">
+                                    View More
+                                </a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped mb-0">
                                         <thead>
                                             <tr>
-                                                <th>No Invoice</th>
+                                                <th>Invoice No</th>
                                                 <th>Customer</th>
                                                 <th>Laptop</th>
                                                 <th>Status</th>
-                                                <th>Total Biaya</th>
+                                                <th>Total Cost</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -103,8 +106,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="5" class="text-center text-muted">Belum ada data service
-                                                    </td>
+                                                    <td colspan="5" class="text-center text-muted">No service data yet</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
