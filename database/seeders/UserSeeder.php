@@ -19,20 +19,20 @@ class UserSeeder extends Seeder
             'status' => 'Active',
         ]);
         // technician
-        User::create([
-            'name' => 'Technician',
-            'email' => 'technician@lo.co',
-            'password' => Hash::make('1234'),
-            'role' => 'technician',
-            'status' => 'Active',
-        ]);
+        // User::create([
+        //     'name' => 'Technician',
+        //     'email' => 'technician@lo.co',
+        //     'password' => Hash::make('1234'),
+        //     'role' => 'technician',
+        //     'status' => 'Active',
+        // ]);
         // customer
-        User::create([
-            'name' => 'Customer',
-            'email' => 'customer@lo.co',
-            'password' => Hash::make('1234'),
-            'role' => 'customer',
-            'status' => 'Active',
-        ]);
+        // User::create([
+        //     'name' => 'Customer',
+        //     'email' => 'customer@lo.co',
+        //     'password' => Hash::make('1234'),
+        //     'role' => 'customer',
+        //     'status' => 'Active',
+        // ]);
     }
 }
