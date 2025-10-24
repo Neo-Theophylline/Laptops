@@ -11,16 +11,16 @@ return new class extends Migration
         Schema::create('service_items', function (Blueprint $table) {
             $table->id();
             $table->string('service_name');
-            $table->string('price');
+            $table->integer('price');
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->string('photo')->nullable();
             $table->timestamps();
         });
     }
 
+
     public function down(): void
     {
         Schema::dropIfExists('service_items');
     }
 };
-

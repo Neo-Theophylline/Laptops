@@ -12,4 +12,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+        public function customerServices()
+    {
+        return $this->hasMany(Service::class, 'customer_id');
+    }
+
+    public function technicianServices()
+    {
+        return $this->hasMany(Service::class, 'technician_id');
+    }
 }

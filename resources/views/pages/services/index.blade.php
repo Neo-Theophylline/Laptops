@@ -35,34 +35,45 @@
                                     <th>No invoice</th>
                                     <th>Customer</th>
                                     <th>Laptop</th>
-                                    <th>Laptop Models</th>
                                     <th>Status</th>
                                     <th>Payment</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="align-middle">
-                                    <td class="text-nowrap">INV-001</td>
-                                    <td class="text-nowrap">John Doe</td>
-                                    <td class="text-nowrap">Ass us Rough</td>
-                                    <td class="text-nowrap">john@example.com</td>
-                                    <td class="text-nowrap">
-                                        <span class="badge bg-success">Success</span>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <span class="badge bg-success">Paid</span>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <div class="d-inline-flex gap-2 align-items-center">
-                                            <a href="{{ route('services.show',1) }}" class="btn btn-sm btn-primary">Detail</a>
-                                            <a href="{{ route('services.payment',1) }}" class="btn btn-sm btn-success">Payment</a>
-                                        </div>
-                                    </td>
-                                </tr>
-
+                                @forelse ($services as $service)
+                                    <tr class="align-middle">
+                                        <td class="text-nowrap">{{ $service->no_invoice }}</td>
+                                        <td class="text-nowrap">{{ $service->customer->name ?? '-' }}</td>
+                                        <td class="text-nowrap">{{ $service->laptop->brand ?? '-' }} {{ $service->laptop->model ?? '-' }}</td>
+                                        <td class="text-nowrap">
+                                            @if ($service->status == 'accepted')
+                                                <span class="badge bg-info">Accepted</span>
+                                            @elseif ($service->status == 'in-progress')
+                                                <span class="badge bg-warning">In Progress</span>
+                                            @elseif ($service->status == 'done')
+                                                <span class="badge bg-success">Done</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($service->status) }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-nowrap">
+                                            @if ($service->status_paid == 'paid')
+                                                <span class="badge bg-success">Paid</span>
+                                            @else
+                                                <span class="badge bg-danger">Unpaid</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-nowrap">
+                                            <div class="d-inline-flex gap-2 align-items-center">
+                                                <a href="{{ route('services.show', $service->id) }}"
+                                                    class="btn btn-sm btn-primary">Detail</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
                             </tbody>
-
                         </table>
                     </div>
                 </div>

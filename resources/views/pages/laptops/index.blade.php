@@ -53,7 +53,7 @@
                                         <img src="{{ asset('storage/' . $laptop->photo) }}" alt="{{ $laptop->brand }}"
                                             style="width: 50px; height: 50px; object-fit: cover;">
                                     @else
-                                        <img src="{{ asset('assets/img/npc.png') }}" alt="No Photo"
+                                        <img src="{{ asset('assets/img/laptop.jpg') }}" alt="No Photo"
                                             style="width: 50px; height: 50px; object-fit: cover;">
                                     @endif
                                 </td>

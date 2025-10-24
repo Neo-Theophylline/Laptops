@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class UserController extends Controller
 {
@@ -20,86 +21,107 @@ class UserController extends Controller
         return view('pages.users.create');
     }
 
-    // Simpan user baru ke database
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'phone'    => 'nullable|string|max:20',
-            'role'     => 'required|string',
-            'status'   => 'required|string',
-            'password' => 'required|min:6',
-            'photo'    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'address'  => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users,email',
+                'phone'    => 'nullable|string|max:20',
+                'role'     => 'required|string',
+                'status'   => 'required|string',
+                'password' => 'required',
+                'photo'    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'address'  => 'nullable|string|max:255',
+            ]);
 
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('photos', 'public');
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = $request->file('photo')->store('photos', 'public');
+            }
+
+            $validated['password'] = Hash::make($validated['password']);
+
+            User::create($validated);
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', '✅ User has been successfully created.');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', '❌ Failed to create user. Please try again.');
         }
-
-        $validated['password'] = Hash::make($validated['password']);
-
-        User::create($validated);
-
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
-    // Tampilkan detail user tertentu
     public function show(User $user)
     {
         return view('pages.users.show', compact('user'));
     }
 
-    // Tampilkan form edit
     public function edit(User $user)
     {
         return view('pages.users.edit', compact('user'));
     }
 
-    // Update user
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $user->id,
-            'phone'    => 'nullable|string|max:20',
-            'role'     => 'required|string',
-            'status'   => 'required|string',
-            'password' => 'nullable|min:6',
-            'photo'    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'address'  => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users,email,' . $user->id,
+                'phone'    => 'nullable|string|max:20',
+                'role'     => 'required|string',
+                'status'   => 'required|string',
+                'password' => 'nullable',
+                'photo'    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'address'  => 'nullable|string|max:255',
+            ]);
 
-        // Handle photo
-        if ($request->hasFile('photo')) {
-            // Hapus foto lama jika ada
+            // Handle photo upload
+            if ($request->hasFile('photo')) {
+                if ($user->photo) {
+                    Storage::disk('public')->delete($user->photo);
+                }
+                $validated['photo'] = $request->file('photo')->store('photos', 'public');
+            }
+
+            // Handle password update
+            if ($request->filled('password')) {
+                $validated['password'] = Hash::make($request->password);
+            } else {
+                unset($validated['password']);
+            }
+
+            $user->update($validated);
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', '✅ User has been successfully updated.');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', '❌ Failed to update user. Please try again.');
+        }
+    }
+
+    public function destroy(User $user)
+    {
+        try {
             if ($user->photo) {
                 Storage::disk('public')->delete($user->photo);
             }
-            $validated['photo'] = $request->file('photo')->store('photos', 'public');
+
+            $user->delete();
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', '🗑️ User has been successfully deleted.');
+        } catch (Exception $e) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', '❌ Failed to delete user. Please try again.');
         }
-
-        // Handle password
-        if ($request->filled('password')) {
-            $validated['password'] = Hash::make($request->password);
-        } else {
-            unset($validated['password']);
-        }
-
-        $user->update($validated);
-
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
-    }
-
-    // Hapus user
-    public function destroy(User $user)
-    {
-        if ($user->photo) {
-            Storage::disk('public')->delete($user->photo);
-        }
-
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 }

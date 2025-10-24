@@ -46,7 +46,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <img src="{{ $item->photo ? asset('storage/'.$item->photo) : asset('assets/img/npc.png') }}" 
+                                    <img src="{{ $item->photo ? asset('storage/'.$item->photo) : asset('assets/img/wrench.jpg') }}" 
                                          alt="{{ $item->service_name }}" style="width:50px; height:50px; object-fit:cover;">
                                 </td>
                                 <td>{{ $item->service_name }}</td>
@@ -69,9 +69,6 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="6" class="text-center">No service items found.</td>
-                            </tr>
                             @endforelse
                         </tbody>
                     </table>

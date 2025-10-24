@@ -58,7 +58,7 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="price">Price</label>
-                                            <input type="text" id="price" class="form-control"
+                                            <input type="number" id="number" class="form-control"
                                                 placeholder="ex: 999.999" name="price" required>
                                         </div>
                                     </div>

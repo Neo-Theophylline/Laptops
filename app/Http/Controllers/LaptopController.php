@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Laptop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class LaptopController extends Controller
 {
     public function index()
     {
-        $laptops = Laptop::all();
+        $laptops = Laptop::latest()->get();
         return view('pages.laptops.index', compact('laptops'));
     }
 
@@ -21,23 +22,32 @@ class LaptopController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'released_year' => 'nullable|digits:4',
-            'status' => 'required|in:Active,Inactive',
-            'photo' => 'nullable|image|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'brand' => 'required|string|max:255',
+                'model' => 'required|string|unique:laptops,model|max:255',
+                'released_year' => 'nullable|digits:4',
+                'status' => 'required|in:Active,Inactive',
+                'photo' => 'nullable|image|max:2048',
+            ]);
 
-        $data = $request->all();
+            $data = $request->only(['brand', 'model', 'released_year', 'status']);
 
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('laptops', 'public');
+            if ($request->hasFile('photo')) {
+                $data['photo'] = $request->file('photo')->store('laptops', 'public');
+            }
+
+            Laptop::create($data);
+
+            return redirect()
+                ->route('laptops.index')
+                ->with('success', '✅ Laptop has been successfully created.');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', '❌ Failed to create laptop. Please try again.');
         }
-
-        Laptop::create($data);
-
-        return redirect()->route('laptops.index')->with('success', 'Laptop created successfully.');
     }
 
     public function show(Laptop $laptop)
@@ -52,36 +62,53 @@ class LaptopController extends Controller
 
     public function update(Request $request, Laptop $laptop)
     {
-        $request->validate([
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'released_year' => 'nullable|digits:4',
-            'status' => 'required|in:Active,Inactive',
-            'photo' => 'nullable|image|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'brand' => 'required|string|max:255',
+                'model' => 'required|string|max:255',
+                'released_year' => 'nullable|digits:4',
+                'status' => 'required|in:Active,Inactive',
+                'photo' => 'nullable|image|max:2048',
+            ]);
 
-        $data = $request->all();
+            $data = $request->only(['brand', 'model', 'released_year', 'status']);
 
-        if ($request->hasFile('photo')) {
-            // hapus photo lama
-            if ($laptop->photo) {
-                Storage::disk('public')->delete($laptop->photo);
+            if ($request->hasFile('photo')) {
+                if ($laptop->photo) {
+                    Storage::disk('public')->delete($laptop->photo);
+                }
+                $data['photo'] = $request->file('photo')->store('laptops', 'public');
             }
-            $data['photo'] = $request->file('photo')->store('laptops', 'public');
+
+            $laptop->update($data);
+
+            return redirect()
+                ->route('laptops.index')
+                ->with('success', '✅ Laptop has been successfully updated.');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', '❌ Failed to update laptop. Please try again.');
         }
-
-        $laptop->update($data);
-
-        return redirect()->route('laptops.index')->with('success', 'Laptop updated successfully.');
     }
 
     public function destroy(Laptop $laptop)
     {
-        if ($laptop->photo) {
-            Storage::disk('public')->delete($laptop->photo);
-        }
-        $laptop->delete();
+        try {
+            if ($laptop->photo) {
+                Storage::disk('public')->delete($laptop->photo);
+            }
 
-        return redirect()->route('laptops.index')->with('success', 'Laptop deleted successfully.');
+            $laptop->delete();
+
+            return redirect()
+                ->route('laptops.index')
+                ->with('success', '🗑️ Laptop has been successfully deleted.');
+        } catch (Exception $e) {
+            return redirect()
+                ->route('laptops.index')
+                ->with('error', '❌ Failed to delete laptop. Please try again.');
+        }
     }
 }

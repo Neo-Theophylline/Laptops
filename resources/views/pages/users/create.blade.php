@@ -91,7 +91,7 @@
                                         <div class="col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="phone">Phone</label>
-                                                <input type="text" id="phone" class="form-control" name="phone"
+                                                <input type="number" id="phone" class="form-control" name="phone"
                                                     placeholder="ex: +62 812 3456 7890" required>
                                             </div>
                                         </div>

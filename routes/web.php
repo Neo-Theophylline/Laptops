@@ -1,23 +1,31 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LaptopController;
-use App\Http\Controllers\ServiceItemController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ServiceItemController;
+use App\Http\Controllers\AuthController;
 
-// Dashboard
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Other routes
-Route::resources([
-    'users' => UserController::class,
-    'laptops' => LaptopController::class,
-    'serviceitems' => ServiceItemController::class,
-    'services' => ServiceController::class,
-]);
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 
-// custom payment
-Route::get('services/{service}/payment', [ServiceController::class, 'payment'])
-     ->name('services.payment');
+    // Other routes
+    Route::resources([
+        'users' => UserController::class,
+        'laptops' => LaptopController::class,
+        'serviceitems' => ServiceItemController::class,
+        'services' => ServiceController::class,
+        'payments' => PaymentController::class,
+    ]);
+
+    Route::put('/services/{id}/update-detail', [ServiceController::class, 'updateDetail'])->name('services.updateDetail');
+});
+
